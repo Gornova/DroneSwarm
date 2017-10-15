@@ -1,0 +1,14 @@
+Sprint 1
+	+ base station with radius
+	+ base stations create drones
+	+ drones moves after creation in a random point in base station radius
+	+ two different teams: red and blue
+	+ drones fighting
+	+ dones can destroy base station
+	
+	
+	
+	
+NICE TO HAVE:
+	for drones and bases use geometry instead of images
+	remove instanceof and use entity type
