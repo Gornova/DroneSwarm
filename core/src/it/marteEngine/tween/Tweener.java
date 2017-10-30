@@ -15,8 +15,6 @@ public class Tweener {
 	private List<Tween> tweens = new ArrayList<Tween>();
 	private List<Tween> removeable = new ArrayList<Tween>();
 
-	private boolean active = true;
-
 	public Tweener(Tween... tweens) {
 		if (tweens != null) {
 			List<Tween> allTweens = Arrays.asList(tweens);
