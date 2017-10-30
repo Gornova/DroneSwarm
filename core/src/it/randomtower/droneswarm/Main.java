@@ -20,11 +20,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import it.randomtower.droneswarm.model.Drone;
 import it.randomtower.droneswarm.model.GameEntity;
+import it.randomtower.droneswarm.model.Player;
 import it.randomtower.droneswarm.model.State;
 import it.randomtower.droneswarm.model.Station;
 
 public class Main extends ApplicationAdapter implements InputProcessor {
 
+	private static final int NEUTRAL = 0;
 	private static final int PLAYER_ONE = 1;
 	private static final int PLAYER_TWO = 2;
 	private SpriteBatch batch;
@@ -34,11 +36,15 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private final Color LIGHT_RED = new Color(0.25f, 0, 0, 0.1f);
 	private final Color LIGHT_BLUE = new Color(0, 0, 0.25f, 0.1f);
+	private final Color LIGHT_GRAY = new Color(150f, 150f, 150f, 0.1f);
 	private Vector2 target;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 	private boolean playerOneWin;
 	private boolean playerTwoWin;
+	private Player one;
+	private Player two;
+	private Player neutral;
 
 	@Override
 	public void create() {
@@ -47,15 +53,21 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		font = new BitmapFont(true); // or use alex answer to use custom font
-
 		Gdx.input.setInputProcessor(this);
 
-		Station ste = new Station(50, 50, new Texture("station.png"), 50, LIGHT_RED, PLAYER_ONE, 100, 100);
+		//
+		one = new Player(LIGHT_RED, PLAYER_ONE);
+		two = new Player(LIGHT_BLUE, PLAYER_TWO);
+		neutral = new Player(LIGHT_GRAY, NEUTRAL);
+
+		Station ste = new Station(50, 50, new Texture("station.png"), 50, one, 100, 100);
 		entities.add(ste);
 
-		Station ste2 = new Station(640 - 80, 480 - 80, new Texture("station-blue.png"), 50, LIGHT_BLUE, PLAYER_TWO, 100,
-				500);
+		Station ste2 = new Station(640 - 80, 480 - 80, new Texture("station-blue.png"), 50, two, 100, 500);
 		entities.add(ste2);
+
+		Station ste3 = new Station(640 - 80, 50, new Texture("station-gray.png"), 50, neutral, 100, 500);
+		entities.add(ste3);
 	}
 
 	@Override
@@ -93,15 +105,19 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		// add entities
 		entities.addAll(toAdd);
 		toAdd.clear();
+		// check win condition
+		long ts = entities.stream().filter(e -> (e instanceof Station)).count();
+		long onets = countAllStations(PLAYER_ONE);
+		long twots = countAllStations(PLAYER_TWO);
+		playerOneWin = ts == onets ? true : false;
+		playerTwoWin = ts == twots ? true : false;
 		// remove entities
-		for (GameEntity ge : toRemove) {
-			if (ge instanceof Station) {
-				playerOneWin = ge.player == PLAYER_TWO ? true : false;
-				playerTwoWin = ge.player == PLAYER_TWO ? true : false;
-			}
-		}
 		entities.removeAll(toRemove);
 		toRemove.clear();
+	}
+
+	private long countAllStations(int name) {
+		return entities.stream().filter(e -> (e instanceof Station)).filter(e -> e.player.name == name).count();
 	}
 
 	private String getPercent(int hp) {
@@ -113,9 +129,9 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		ge.timer += Gdx.graphics.getDeltaTime() * 1000;
 		if (ge instanceof Station) {
 			Station s = (Station) ge;
-			if (s.timer >= s.creationTime) {
+			if (s.player.name != NEUTRAL && s.timer >= s.creationTime) {
 				s.timer = 0;
-				createDrone(s.x, s.y, s.radius, s.color, s.player);
+				createDrone(s.x, s.y, s.radius, s.player);
 			}
 		}
 		if (ge instanceof Drone) {
@@ -124,12 +140,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			if (e != null) {
 				d.state = State.ATTACK;
 				combat(e, d);
-				if (e.hp < 0) {
-					toRemove.add(e);
-				}
-				if (d.hp < 0) {
-					toRemove.add(d);
-				}
+				evaluateCombat(e, d.player);
+				evaluateCombat(d, e.player);
 			}
 			if (d.state == State.ATTACK) {
 
@@ -142,10 +154,29 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 					d.state = State.WAIT;
 				}
 			}
-			if (d.state == State.WAIT && target != null && d.player == PLAYER_ONE) {
+			if (d.state == State.WAIT && target != null && d.player.name == PLAYER_ONE) {
 				d.setTarget(target.x, target.y);
 			}
 		}
+	}
+
+	private void evaluateCombat(GameEntity e, Player player) {
+		if (isDead(e)) {
+			if (e instanceof Station) {
+				e.hp = 100;
+				changePlayer(e, player);
+			} else {
+				toRemove.add(e);
+			}
+		}
+	}
+
+	private void changePlayer(GameEntity e, Player player) {
+		e.player = player;
+	}
+
+	private boolean isDead(GameEntity e) {
+		return e.hp < 0;
 	}
 
 	private void combat(GameEntity e, Drone d) {
@@ -155,35 +186,34 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private GameEntity enemyInRadius(Drone d) {
 		// TODO: al posto di instanceof mettere un tipo alle entità!!
-		Optional<GameEntity> o = entities.stream().filter(e -> e.player != d.player)
+		Optional<GameEntity> o = entities.stream().filter(e -> e.player.name != d.player.name)
 				.filter(e -> e.distance(d) < d.radius).findFirst();
 		return o.isPresent() ? o.get() : null;
 	}
 
-	private void createDrone(float x, float y, int radius, Color color, int player) {
+	private void createDrone(float x, float y, int radius, Player player) {
 		Random rnd = new Random();
 		int dx = rnd.nextInt(radius / 2);
 		int dy = rnd.nextInt(radius / 2);
 		int mx = rnd.nextBoolean() ? 1 : -1;
 		int my = rnd.nextBoolean() ? 1 : -1;
 		Texture img = null;
-		if (player == PLAYER_ONE) {
+		if (player.name == PLAYER_ONE) {
 			img = new Texture("drone.png");
 		} else {
 			img = new Texture("drone-blue.png");
 		}
-		Drone de = new Drone(x + 10, y + 10, img, color, player, 10, 2);
+		Drone de = new Drone(x + 10, y + 10, img, player, 10, 2);
 		if (target == null) {
 			de.setTarget(x + mx * dx, y + my * dy);
 		}
-		// de.setTarget(100, 100);
 		toAdd.add(de);
 	}
 
 	private void renderRadius(ShapeRenderer shapeRenderer, GameEntity ge) {
 		if (ge instanceof Station) {
 			Station s = (Station) ge;
-			shapeRenderer.setColor(s.color);
+			shapeRenderer.setColor(s.player.color);
 			shapeRenderer.setProjectionMatrix(camera.combined); // Important
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.circle(s.x + 10, s.y + 10, s.radius);

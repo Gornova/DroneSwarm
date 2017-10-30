@@ -2,7 +2,6 @@ package it.randomtower.droneswarm.model;
 
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,8 +20,8 @@ public class Drone extends GameEntity {
 
 	public State state = State.WAIT;
 
-	public Drone(float i, float j, Texture texture, Color color, int player, int hp, int atk) {
-		super(i, j, texture, color, player, hp, atk);
+	public Drone(float x, float y, Texture img, Player player, int i, int j) {
+		super(x, y, img, player, i, j);
 	}
 
 	public void setTarget(float f, float g) {
