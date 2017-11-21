@@ -3,10 +3,12 @@ package it.randomtower.droneswarm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,8 +16,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import it.randomtower.droneswarm.action.GameAction;
 import it.randomtower.droneswarm.model.Drone;
 import it.randomtower.droneswarm.model.GameEntity;
 import it.randomtower.droneswarm.model.GameEntityType;
@@ -35,6 +39,12 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	private BitmapFont font;
 	private boolean playerOneWin;
 	private boolean playerTwoWin;
+	private List<GameAction> actions = new ArrayList<GameAction>();
+	private List<GameAction> actionToAdd = new ArrayList<GameAction>();
+	private List<GameAction> actionToRemove = new ArrayList<GameAction>();
+	private Player one;
+	private Rectangle selection = new Rectangle(0, 0, 0, 0);
+	private boolean startSelect = false;
 
 	@Override
 	public void create() {
@@ -46,7 +56,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 
 		//
-		Player one = new Player(G.LIGHT_RED, G.PLAYER_ONE);
+		one = new Player(G.LIGHT_RED, G.PLAYER_ONE);
 		Player two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
 		Player neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
 
@@ -86,10 +96,31 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			// render entities
 			batch.draw(ge.img, ge.x, ge.y);
 			if (ge.type == GameEntityType.STATION) {
-				font.draw(batch, getPercent(ge.hp), ge.x - 5, ge.y + 30);
+				Station s = (Station) ge;
+				if (s.selected) {
+					font.setColor(Color.YELLOW);
+					font.draw(batch, getPercent(s.hp), s.x - 5, s.y + 30);
+					font.setColor(Color.WHITE);
+				} else {
+					font.draw(batch, getPercent(s.hp), s.x - 5, s.y + 30);
+				}
 			}
 		}
+		// draw selection
+		if (startSelect) {
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.WHITE);
+			shapeRenderer.rect(selection.x, selection.y, selection.width, selection.height);
+			shapeRenderer.end();
+		}
 		batch.end();
+		// add actions
+		actions.addAll(actionToAdd);
+		// execute actions
+		for (GameAction action : actions) {
+			action.execute();
+			actionToRemove.add(action);
+		}
 		// update
 		for (GameEntity ge : entities) {
 			update(ge);
@@ -106,6 +137,10 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		// remove entities
 		entities.removeAll(toRemove);
 		toRemove.clear();
+		// clear actions
+		actionToAdd.clear();
+		actions.removeAll(actionToRemove);
+		actionToRemove.clear();
 	}
 
 	private long countAllStations(int name) {
@@ -226,8 +261,50 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println("Click " + screenX + "," + screenY);
-		target = new Vector2(screenX, screenY);
+		// TODO
+		// System.out.println("Click " + screenX + "," + screenY);
+		// target = new Vector2(screenX, screenY);
+		// selection rectangle
+		if (button == 0) {
+			if (!startSelect) {
+				startSelect = true;
+				// un-made selection
+				entities.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
+						.filter(d -> d.player.name == one.name).forEach(d -> d.selected = false);
+				selection.set(screenX, screenY, 0, 0);
+			} else {
+				startSelect = false;
+				// make selection
+				List<Drone> selectedDrones = entities.stream().filter(e -> e.type == GameEntityType.DRONE)
+						.map(d -> (Drone) d).filter(d -> d.player.name == one.name).filter(d -> d.isInside(selection))
+						.collect(Collectors.toList());
+				if (!selectedDrones.isEmpty()) {
+					System.out.println();
+					for (Drone drone : selectedDrones) {
+						drone.selected = true;
+					}
+				}
+			}
+		}
+		if (button == 1) {
+			// for all selected drones, set target as point
+			entities.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
+					.filter(d -> d.player.name == one.name).filter(d -> d.selected)
+					.forEach(d -> d.setTarget(screenX, screenY));
+			;
+		}
+		// Optional<Station> o = entities.stream().filter(e -> e.type ==
+		// GameEntityType.STATION).map(s -> (Station) s)
+		// .filter(s -> s.inRange(screenX, screenY)).findFirst();
+		// if (o.isPresent()) {
+		// if (button == 0) {
+		// // left click on station => select a station if from that player
+		// Station s = o.get();
+		// actionToAdd.add(new SelectStation(s, one));
+		// }
+		// return false;
+		// }
+
 		return false;
 	}
 
@@ -243,6 +320,9 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		if (startSelect) {
+			selection.setSize(screenX - selection.x, screenY - selection.y);
+		}
 		return false;
 	}
 

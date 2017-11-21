@@ -9,7 +9,11 @@ Sprint 1
 Sprin 2
 	+ neutral spots to control
 	+ neutral zones generate drones
-	- add action command pattern	
+	+ add action command pattern
+	+ select a station command 
+	+ draw rectangle and select drones and move them using right click
+	- command for drones
+	- dragging for creating selection
 	- proper AI
 
 	
