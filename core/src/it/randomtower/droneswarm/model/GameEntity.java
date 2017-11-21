@@ -12,14 +12,16 @@ public class GameEntity {
 	public int hp;
 	public int atk;
 	public Player player;
+	public GameEntityType type;
 
-	public GameEntity(float i, float j, Texture texture, Player player, int hp, int atk) {
+	public GameEntity(float i, float j, Texture texture, Player player, int hp, int atk, GameEntityType type) {
 		this.x = i;
 		this.y = j;
 		this.img = texture;
 		this.player = player;
 		this.hp = hp;
 		this.atk = atk;
+		this.type = type;
 	}
 
 	public float distance(GameEntity other) {

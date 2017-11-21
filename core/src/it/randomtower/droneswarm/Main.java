@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import it.randomtower.droneswarm.model.Drone;
 import it.randomtower.droneswarm.model.GameEntity;
+import it.randomtower.droneswarm.model.GameEntityType;
 import it.randomtower.droneswarm.model.Player;
 import it.randomtower.droneswarm.model.State;
 import it.randomtower.droneswarm.model.Station;
@@ -93,7 +94,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		for (GameEntity ge : entities) {
 			// render entities
 			batch.draw(ge.img, ge.x, ge.y);
-			if (ge instanceof Station) {
+			if (ge.type == GameEntityType.STATION) {
 				font.draw(batch, getPercent(ge.hp), ge.x - 5, ge.y + 30);
 			}
 		}
@@ -106,7 +107,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		entities.addAll(toAdd);
 		toAdd.clear();
 		// check win condition
-		long ts = entities.stream().filter(e -> (e instanceof Station)).count();
+		long ts = entities.stream().filter(e -> (e.type == GameEntityType.STATION)).count();
 		long onets = countAllStations(PLAYER_ONE);
 		long twots = countAllStations(PLAYER_TWO);
 		playerOneWin = ts == onets ? true : false;
@@ -117,7 +118,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	}
 
 	private long countAllStations(int name) {
-		return entities.stream().filter(e -> (e instanceof Station)).filter(e -> e.player.name == name).count();
+		return entities.stream().filter(e -> (e.type == GameEntityType.STATION)).filter(e -> e.player.name == name)
+				.count();
 	}
 
 	private String getPercent(int hp) {
@@ -127,14 +129,14 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private void update(GameEntity ge) {
 		ge.timer += Gdx.graphics.getDeltaTime() * 1000;
-		if (ge instanceof Station) {
+		if (ge.type == GameEntityType.STATION) {
 			Station s = (Station) ge;
 			if (s.player.name != NEUTRAL && s.timer >= s.creationTime) {
 				s.timer = 0;
 				createDrone(s.x, s.y, s.radius, s.player);
 			}
 		}
-		if (ge instanceof Drone) {
+		if (ge.type == GameEntityType.DRONE) {
 			Drone d = (Drone) ge;
 			GameEntity e = enemyInRadius(d);
 			if (e != null) {
@@ -162,7 +164,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private void evaluateCombat(GameEntity e, Player player) {
 		if (isDead(e)) {
-			if (e instanceof Station) {
+			if (e.type == GameEntityType.STATION) {
 				e.hp = 100;
 				changePlayer(e, player);
 			} else {
@@ -185,7 +187,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	}
 
 	private GameEntity enemyInRadius(Drone d) {
-		// TODO: al posto di instanceof mettere un tipo alle entità!!
 		Optional<GameEntity> o = entities.stream().filter(e -> e.player.name != d.player.name)
 				.filter(e -> e.distance(d) < d.radius).findFirst();
 		return o.isPresent() ? o.get() : null;
@@ -211,7 +212,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	}
 
 	private void renderRadius(ShapeRenderer shapeRenderer, GameEntity ge) {
-		if (ge instanceof Station) {
+		if (ge.type == GameEntityType.STATION) {
 			Station s = (Station) ge;
 			shapeRenderer.setColor(s.player.color);
 			shapeRenderer.setProjectionMatrix(camera.combined); // Important
@@ -232,19 +233,16 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -257,25 +255,21 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

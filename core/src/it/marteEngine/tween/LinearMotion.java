@@ -1,37 +1,35 @@
 package it.marteEngine.tween;
 
-
 public class LinearMotion extends Motion {
 
 	private float fromX;
 	private float fromY;
+	@SuppressWarnings("unused")
 	private float toX;
+	@SuppressWarnings("unused")
 	private float toY;
 	private float moveX;
 	private float moveY;
+	@SuppressWarnings("unused")
 	private float speed = 1.0f;
+	@SuppressWarnings("unused")
 	private float distance = -1f;
 
-	public LinearMotion(float fromX, float fromY, float toX, float toY,
-			float duration, int easeFunction) {
-		this(fromX, fromY, toX, toY, 1.0f, TweenerMode.ONESHOT, duration,
-				easeFunction);
+	public LinearMotion(float fromX, float fromY, float toX, float toY, float duration, int easeFunction) {
+		this(fromX, fromY, toX, toY, 1.0f, TweenerMode.ONESHOT, duration, easeFunction);
 	}
 
-	public LinearMotion(float fromX, float fromY, float toX, float toY,
-			float speed, float duration, int easeFunction) {
-		this(fromX, fromY, toX, toY, speed, TweenerMode.ONESHOT, duration,
-				easeFunction);
+	public LinearMotion(float fromX, float fromY, float toX, float toY, float speed, float duration, int easeFunction) {
+		this(fromX, fromY, toX, toY, speed, TweenerMode.ONESHOT, duration, easeFunction);
 	}
 
-	public LinearMotion(float fromX, float fromY, float toX, float toY,
-			float speed, TweenerMode type, float duration, int easeFunction) {
+	public LinearMotion(float fromX, float fromY, float toX, float toY, float speed, TweenerMode type, float duration,
+			int easeFunction) {
 		this(fromX, fromY, toX, toY, speed, type, duration, easeFunction, false);
 	}
 
-	public LinearMotion(float fromX, float fromY, float toX, float toY,
-			float speed, TweenerMode type, float duration, int easeFunction,
-			boolean deltaMode) {
+	public LinearMotion(float fromX, float fromY, float toX, float toY, float speed, TweenerMode type, float duration,
+			int easeFunction, boolean deltaMode) {
 		super(duration, type, easeFunction, false, true);
 		this.distance = -1f;
 		this.x = this.fromX = fromX;

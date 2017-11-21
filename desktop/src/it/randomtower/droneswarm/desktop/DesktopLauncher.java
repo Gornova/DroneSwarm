@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.title = "Drone Swarm";
 		config.width = 640;
 		config.height = 480;
+		config.resizable = false;
 		new LwjglApplication(new Main(), config);
 	}
 }
