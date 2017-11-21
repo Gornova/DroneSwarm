@@ -3,12 +3,10 @@ package it.randomtower.droneswarm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,25 +25,16 @@ import it.randomtower.droneswarm.model.Station;
 
 public class Main extends ApplicationAdapter implements InputProcessor {
 
-	private static final int NEUTRAL = 0;
-	private static final int PLAYER_ONE = 1;
-	private static final int PLAYER_TWO = 2;
 	private SpriteBatch batch;
 	private List<GameEntity> entities = new ArrayList<GameEntity>();
 	private List<GameEntity> toAdd = new ArrayList<GameEntity>();
 	private List<GameEntity> toRemove = new ArrayList<GameEntity>();
 	private ShapeRenderer shapeRenderer;
-	private final Color LIGHT_RED = new Color(0.25f, 0, 0, 0.1f);
-	private final Color LIGHT_BLUE = new Color(0, 0, 0.25f, 0.1f);
-	private final Color LIGHT_GRAY = new Color(150f, 150f, 150f, 0.1f);
 	private Vector2 target;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 	private boolean playerOneWin;
 	private boolean playerTwoWin;
-	private Player one;
-	private Player two;
-	private Player neutral;
 
 	@Override
 	public void create() {
@@ -57,17 +46,19 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 
 		//
-		one = new Player(LIGHT_RED, PLAYER_ONE);
-		two = new Player(LIGHT_BLUE, PLAYER_TWO);
-		neutral = new Player(LIGHT_GRAY, NEUTRAL);
+		Player one = new Player(G.LIGHT_RED, G.PLAYER_ONE);
+		Player two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
+		Player neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
 
-		Station ste = new Station(50, 50, new Texture("station.png"), 50, one, 100, 100);
+		Station ste = GameEntityFactory.buildStation(50, 50, new Texture("station.png"), 50, one, 100, 100);
 		entities.add(ste);
 
-		Station ste2 = new Station(640 - 80, 480 - 80, new Texture("station-blue.png"), 50, two, 100, 500);
+		Station ste2 = GameEntityFactory.buildStation(640 - 80, 480 - 80, new Texture("station-blue.png"), 50, two, 100,
+				500);
 		entities.add(ste2);
 
-		Station ste3 = new Station(640 - 80, 50, new Texture("station-gray.png"), 50, neutral, 100, 500);
+		Station ste3 = GameEntityFactory.buildStation(640 - 80, 50, new Texture("station-gray.png"), 50, neutral, 100,
+				500);
 		entities.add(ste3);
 	}
 
@@ -108,8 +99,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		toAdd.clear();
 		// check win condition
 		long ts = entities.stream().filter(e -> (e.type == GameEntityType.STATION)).count();
-		long onets = countAllStations(PLAYER_ONE);
-		long twots = countAllStations(PLAYER_TWO);
+		long onets = countAllStations(G.PLAYER_ONE);
+		long twots = countAllStations(G.PLAYER_TWO);
 		playerOneWin = ts == onets ? true : false;
 		playerTwoWin = ts == twots ? true : false;
 		// remove entities
@@ -131,9 +122,15 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		ge.timer += Gdx.graphics.getDeltaTime() * 1000;
 		if (ge.type == GameEntityType.STATION) {
 			Station s = (Station) ge;
-			if (s.player.name != NEUTRAL && s.timer >= s.creationTime) {
+			if (s.player.name != G.NEUTRAL && s.timer >= s.creationTime) {
 				s.timer = 0;
-				createDrone(s.x, s.y, s.radius, s.player);
+				Texture img = null;
+				if (s.player.name == G.PLAYER_ONE) {
+					img = new Texture("drone.png");
+				} else {
+					img = new Texture("drone-blue.png");
+				}
+				toAdd.add(GameEntityFactory.createDrone(s.x, s.y, s.radius, s.player, img, target));
 			}
 		}
 		if (ge.type == GameEntityType.DRONE) {
@@ -156,7 +153,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 					d.state = State.WAIT;
 				}
 			}
-			if (d.state == State.WAIT && target != null && d.player.name == PLAYER_ONE) {
+			if (d.state == State.WAIT && target != null && d.player.name == G.PLAYER_ONE) {
 				d.setTarget(target.x, target.y);
 			}
 		}
@@ -190,25 +187,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		Optional<GameEntity> o = entities.stream().filter(e -> e.player.name != d.player.name)
 				.filter(e -> e.distance(d) < d.radius).findFirst();
 		return o.isPresent() ? o.get() : null;
-	}
-
-	private void createDrone(float x, float y, int radius, Player player) {
-		Random rnd = new Random();
-		int dx = rnd.nextInt(radius / 2);
-		int dy = rnd.nextInt(radius / 2);
-		int mx = rnd.nextBoolean() ? 1 : -1;
-		int my = rnd.nextBoolean() ? 1 : -1;
-		Texture img = null;
-		if (player.name == PLAYER_ONE) {
-			img = new Texture("drone.png");
-		} else {
-			img = new Texture("drone-blue.png");
-		}
-		Drone de = new Drone(x + 10, y + 10, img, player, 10, 2);
-		if (target == null) {
-			de.setTarget(x + mx * dx, y + my * dy);
-		}
-		toAdd.add(de);
 	}
 
 	private void renderRadius(ShapeRenderer shapeRenderer, GameEntity ge) {

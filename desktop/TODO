@@ -8,11 +8,11 @@ Sprint 1
 	
 Sprin 2
 	+ neutral spots to control
-	+ neutral zones generate drones	
+	+ neutral zones generate drones
+	- add action command pattern	
 	- proper AI
 
 	
 	
 NICE TO HAVE:
 	for drones and bases use geometry instead of images
-	remove instanceof and use entity type
