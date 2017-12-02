@@ -2,7 +2,7 @@ package it.randomtower.droneswarm;
 
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import it.randomtower.droneswarm.model.Drone;
@@ -12,11 +12,11 @@ import it.randomtower.droneswarm.model.Station;
 
 public final class GameEntityFactory {
 
-	public static Station buildStation(int x, int y, Texture texture, int k, Player one, int l, int m) {
+	public static Station buildStation(int x, int y, Sprite texture, int k, Player one, int l, int m) {
 		return new Station(x, y, texture, k, one, l, m);
 	}
 
-	public static GameEntity createDrone(float x, float y, int radius, Player player, Texture img, Vector2 target) {
+	public static GameEntity createDrone(float x, float y, int radius, Player player, Sprite img, Vector2 target) {
 		Random rnd = new Random();
 		int dx = rnd.nextInt(radius / 2);
 		int dy = rnd.nextInt(radius / 2);

@@ -12,6 +12,8 @@ Sprin 2
 	+ add action command pattern
 	+ select a station command 
 	+ draw rectangle and select drones and move them using right click
+	+ highlight selected drones
+	- center player one wins correctly
 	- command for drones
 	- dragging for creating selection
 	- proper AI

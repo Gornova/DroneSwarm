@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -52,24 +53,25 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
-		font = new BitmapFont(true); // or use alex answer to use custom font
+		font = new BitmapFont(true);
 		Gdx.input.setInputProcessor(this);
 
 		//
-		one = new Player(G.LIGHT_RED, G.PLAYER_ONE);
+		one = new Player(Color.FOREST, G.PLAYER_ONE);
 		Player two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
 		Player neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
 
-		Station ste = GameEntityFactory.buildStation(50, 50, new Texture("station.png"), 50, one, 100, 100);
+		Station ste = GameEntityFactory.buildStation(50, 50, new Sprite(new Texture("station.png")), 50, one, 100, 100);
 		entities.add(ste);
 
-		Station ste2 = GameEntityFactory.buildStation(640 - 80, 480 - 80, new Texture("station-blue.png"), 50, two, 100,
-				500);
+		Station ste2 = GameEntityFactory.buildStation(640 - 80, 480 - 80, new Sprite(new Texture("station-blue.png")),
+				50, two, 100, 500);
 		entities.add(ste2);
 
-		Station ste3 = GameEntityFactory.buildStation(640 - 80, 50, new Texture("station-gray.png"), 50, neutral, 100,
-				500);
+		Station ste3 = GameEntityFactory.buildStation(640 - 80, 50, new Sprite(new Texture("station-gray.png")), 50,
+				neutral, 100, 500);
 		entities.add(ste3);
+
 	}
 
 	@Override
@@ -94,15 +96,20 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		}
 		for (GameEntity ge : entities) {
 			// render entities
-			batch.draw(ge.img, ge.x, ge.y);
+			if (ge.type == GameEntityType.DRONE && ((Drone) ge).selected) {
+				ge.sprite.setColor(Color.CYAN);
+				ge.sprite.draw(batch);
+			} else {
+				ge.sprite.draw(batch);
+			}
 			if (ge.type == GameEntityType.STATION) {
 				Station s = (Station) ge;
 				if (s.selected) {
 					font.setColor(Color.YELLOW);
-					font.draw(batch, getPercent(s.hp), s.x - 5, s.y + 30);
+					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 30);
 					font.setColor(Color.WHITE);
 				} else {
-					font.draw(batch, getPercent(s.hp), s.x - 5, s.y + 30);
+					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 30);
 				}
 			}
 		}
@@ -159,13 +166,14 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			Station s = (Station) ge;
 			if (s.player.name != G.NEUTRAL && s.timer >= s.creationTime) {
 				s.timer = 0;
-				Texture img = null;
+				Sprite img = null;
 				if (s.player.name == G.PLAYER_ONE) {
-					img = new Texture("drone.png");
+					img = new Sprite(new Texture("drone.png"));
 				} else {
-					img = new Texture("drone-blue.png");
+					img = new Sprite(new Texture("drone-blue.png"));
 				}
-				toAdd.add(GameEntityFactory.createDrone(s.x, s.y, s.radius, s.player, img, target));
+				toAdd.add(GameEntityFactory.createDrone(s.sprite.getX(), s.sprite.getY(), s.radius, s.player, img,
+						target));
 			}
 		}
 		if (ge.type == GameEntityType.DRONE) {
@@ -182,8 +190,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			}
 			if (d.state == State.MOVE) {
 				d.motion.update((int) (Gdx.graphics.getDeltaTime() * 1000));
-				d.x = d.motion.getX();
-				d.y = d.motion.getY();
+				d.sprite.setX(d.motion.getX());
+				d.sprite.setY(d.motion.getY());
 				if (d.motion.isFinished()) {
 					d.state = State.WAIT;
 				}
@@ -230,7 +238,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			shapeRenderer.setColor(s.player.color);
 			shapeRenderer.setProjectionMatrix(camera.combined); // Important
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.circle(s.x + 10, s.y + 10, s.radius);
+			shapeRenderer.circle(s.sprite.getX() + 10, s.sprite.getY() + 10, s.radius);
 			shapeRenderer.end();
 		}
 	}
@@ -238,9 +246,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		for (GameEntity ge : entities) {
-			ge.img.dispose();
-		}
 		entities.clear();
 	}
 
@@ -261,9 +266,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO
-		// System.out.println("Click " + screenX + "," + screenY);
-		// target = new Vector2(screenX, screenY);
 		// selection rectangle
 		if (button == 0) {
 			if (!startSelect) {
@@ -279,7 +281,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 						.map(d -> (Drone) d).filter(d -> d.player.name == one.name).filter(d -> d.isInside(selection))
 						.collect(Collectors.toList());
 				if (!selectedDrones.isEmpty()) {
-					System.out.println();
 					for (Drone drone : selectedDrones) {
 						drone.selected = true;
 					}
@@ -293,18 +294,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 					.forEach(d -> d.setTarget(screenX, screenY));
 			;
 		}
-		// Optional<Station> o = entities.stream().filter(e -> e.type ==
-		// GameEntityType.STATION).map(s -> (Station) s)
-		// .filter(s -> s.inRange(screenX, screenY)).findFirst();
-		// if (o.isPresent()) {
-		// if (button == 0) {
-		// // left click on station => select a station if from that player
-		// Station s = o.get();
-		// actionToAdd.add(new SelectStation(s, one));
-		// }
-		// return false;
-		// }
-
 		return false;
 	}
 
