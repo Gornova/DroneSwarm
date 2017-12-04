@@ -1,10 +1,10 @@
 # Drone Swarm
 
-v0.2
+v0.3
 
 http://randomtower.blogspot.it
 
-![Drone Swarm](img/0.2-1.png)
+![Drone Swarm](img/0.3.png)
 
 ## CONTROLS
 
