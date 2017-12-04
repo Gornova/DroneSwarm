@@ -21,9 +21,12 @@ public class GameEntity {
 		this.type = type;
 	}
 
-	public float distance(GameEntity other) {
-		Vector2 o = new Vector2(other.sprite.getX(), other.sprite.getY());
-		return o.dst(sprite.getX(), sprite.getY());
+	public float distance(Vector2 other) {
+		return other.dst(sprite.getX(), sprite.getY());
+	}
+
+	public Vector2 getVector2() {
+		return new Vector2(sprite.getX(), sprite.getY());
 	}
 
 }

@@ -6,16 +6,17 @@ Sprint 1
 	+ drones fighting
 	+ dones can destroy base station
 	
-Sprin 2
+Sprint 2
 	+ neutral spots to control
 	+ neutral zones generate drones
 	+ add action command pattern
-	+ select a station command 
 	+ draw rectangle and select drones and move them using right click
 	+ highlight selected drones
-	- center player one wins correctly
+	+ center player one wins correctly
+	+ first AI
+	
+Sprint 3	
 	- command for drones
-	- dragging for creating selection
 	- proper AI
 
 	

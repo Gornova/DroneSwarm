@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 import it.randomtower.droneswarm.action.GameAction;
 import it.randomtower.droneswarm.model.Drone;
@@ -46,6 +47,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 	private Player one;
 	private Rectangle selection = new Rectangle(0, 0, 0, 0);
 	private boolean startSelect = false;
+	private AI ai;
 
 	@Override
 	public void create() {
@@ -72,6 +74,9 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 				neutral, 100, 500);
 		entities.add(ste3);
 
+		//
+		ai = new AI(two, ste2.getVector2());
+
 	}
 
 	@Override
@@ -85,7 +90,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		batch.setProjectionMatrix(camera.combined); // Important
 		batch.begin();
 		if (playerOneWin) {
-			font.draw(batch, "Player One Wins!", 320, 240);
+			font.draw(batch, "Player One Wins!", 160, 240, 320, Align.center, true);
+			// font.draw(batch, "Player One Wins!", 320, 240);
 			batch.end();
 			return;
 		}
@@ -97,7 +103,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		for (GameEntity ge : entities) {
 			// render entities
 			if (ge.type == GameEntityType.DRONE && ((Drone) ge).selected) {
-				ge.sprite.setColor(Color.CYAN);
+				ge.sprite.setColor(Color.GREEN);
 				ge.sprite.draw(batch);
 			} else {
 				ge.sprite.draw(batch);
@@ -106,10 +112,10 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 				Station s = (Station) ge;
 				if (s.selected) {
 					font.setColor(Color.YELLOW);
-					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 30);
+					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 70);
 					font.setColor(Color.WHITE);
 				} else {
-					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 30);
+					font.draw(batch, getPercent(s.hp), s.sprite.getX() - 5, s.sprite.getY() + 70);
 				}
 			}
 		}
@@ -129,6 +135,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 			actionToRemove.add(action);
 		}
 		// update
+		ai.update(entities.stream().filter(e -> e.type == GameEntityType.STATION).collect(Collectors.toList()));
 		for (GameEntity ge : entities) {
 			update(ge);
 		}
@@ -165,6 +172,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		if (ge.type == GameEntityType.STATION) {
 			Station s = (Station) ge;
 			if (s.player.name != G.NEUTRAL && s.timer >= s.creationTime) {
+				s.created++;
 				s.timer = 0;
 				Sprite img = null;
 				if (s.player.name == G.PLAYER_ONE) {
@@ -194,10 +202,16 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 				d.sprite.setY(d.motion.getY());
 				if (d.motion.isFinished()) {
 					d.state = State.WAIT;
+					if (d.player.name == G.PLAYER_TWO) {
+						System.out.println();
+					}
 				}
 			}
 			if (d.state == State.WAIT && target != null && d.player.name == G.PLAYER_ONE) {
 				d.setTarget(target.x, target.y);
+			}
+			if (d.state == State.WAIT && d.player.name == G.PLAYER_TWO) {
+				d.setTarget(ai.target.x, ai.target.y);
 			}
 		}
 	}
@@ -228,7 +242,7 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private GameEntity enemyInRadius(Drone d) {
 		Optional<GameEntity> o = entities.stream().filter(e -> e.player.name != d.player.name)
-				.filter(e -> e.distance(d) < d.radius).findFirst();
+				.filter(e -> e.distance(d.getVector2()) < d.radius).findFirst();
 		return o.isPresent() ? o.get() : null;
 	}
 

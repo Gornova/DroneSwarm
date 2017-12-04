@@ -24,6 +24,7 @@ public class Drone extends GameEntity {
 
 	public Drone(float x, float y, Sprite img, Player player, int i, int j) {
 		super(x, y, img, player, i, j, GameEntityType.DRONE);
+		this.state = State.WAIT;
 	}
 
 	public void setTarget(float f, float g) {

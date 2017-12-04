@@ -12,4 +12,7 @@ public final class G {
 	public static final Color LIGHT_BLUE = new Color(0, 0, 0.25f, 0.1f);
 	public static final Color LIGHT_GRAY = new Color(150f, 150f, 150f, 0.1f);
 
+	public static final int STATION_MAX_DRONES = 50;
+	public static final int AI_RE_THINK_TIMER = 2000;
+
 }
