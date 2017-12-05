@@ -10,6 +10,7 @@ public class SelectStation implements GameAction {
 
 	private Station station;
 	private Player player;
+	public boolean toRemove;
 
 	public SelectStation(Station t, Player p) {
 		this.station = t;
@@ -22,6 +23,16 @@ public class SelectStation implements GameAction {
 			station.selected = station.selected ? false : true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isToRemove() {
+		return toRemove;
+	}
+
+	@Override
+	public void setToRemove() {
+		toRemove = true;
 	}
 
 }
