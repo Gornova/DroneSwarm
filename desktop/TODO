@@ -17,6 +17,8 @@ Sprint 2
 	
 Sprint 3
 	+ code refactor
+	+ new selection mode (thanks to VaTTeRGeR)
+	+ fix drone selection color after a new selection (thanks to VaTTeRGeR)
 	- command for drones
 	- proper AI
 

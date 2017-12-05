@@ -154,27 +154,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// selection rectangle
-		if (button == 0) {
-			if (!startSelect) {
-				startSelect = true;
-				// un-made selection
-				world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
-						.filter(d -> d.player.name == one.name).forEach(d -> d.selected = false);
-				selection.set(screenX, screenY, 0, 0);
-			} else {
-				startSelect = false;
-				// make selection
-				List<Drone> selectedDrones = world.stream().filter(e -> e.type == GameEntityType.DRONE)
-						.map(d -> (Drone) d).filter(d -> d.player.name == one.name).filter(d -> d.isInside(selection))
-						.collect(Collectors.toList());
-				if (!selectedDrones.isEmpty()) {
-					for (Drone drone : selectedDrones) {
-						drone.selected = true;
-					}
-				}
-			}
-		}
 		if (button == 1) {
 			// for all selected drones, set target as point
 			world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
@@ -186,19 +165,38 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		System.out.println("stop drag");
+		if (startSelect) {
+			startSelect = false;
+			// make selection
+			List<Drone> selectedDrones = world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
+					.filter(d -> d.player.name == one.name).filter(d -> d.isInside(selection))
+					.collect(Collectors.toList());
+			if (!selectedDrones.isEmpty()) {
+				for (Drone drone : selectedDrones) {
+					drone.selected = true;
+				}
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if (!startSelect) {
+			// un-made selection
+			world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
+					.filter(d -> d.player.name == one.name).forEach(d -> d.selected = false);
+			selection.set(screenX, screenY, 0, 0);
+			startSelect = true;
+			selection.set(screenX, screenY, 0, 0);
+		}
+		selection.setSize(screenX - selection.x, screenY - selection.y);
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		if (startSelect) {
-			selection.setSize(screenX - selection.x, screenY - selection.y);
-		}
 		return false;
 	}
 

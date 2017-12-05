@@ -85,6 +85,7 @@ public class Drone extends GameEntity {
 			sprite.setColor(Color.GREEN);
 			sprite.draw(batch);
 		} else {
+			sprite.setColor(Color.WHITE);
 			sprite.draw(batch);
 		}
 	}
