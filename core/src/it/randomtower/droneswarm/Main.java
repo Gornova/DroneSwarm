@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
 import it.randomtower.droneswarm.action.GameAction;
@@ -31,7 +30,6 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
-	private Vector2 target;
 	private OrthographicCamera camera;
 	private BitmapFont font;
 	private boolean playerOneWin;
@@ -112,6 +110,8 @@ public class Main extends ApplicationAdapter implements InputProcessor {
 		}
 		// update
 		ai.update(world.stream().filter(e -> e.type == GameEntityType.STATION).collect(Collectors.toList()));
+		ai.process(world.stream().filter(e -> e.type == GameEntityType.DRONE && e.player.name == ai.player.name)
+				.collect(Collectors.toList()));
 		world.update();
 		// check win condition
 		long ts = world.stream().filter(e -> (e.type == GameEntityType.STATION)).count();

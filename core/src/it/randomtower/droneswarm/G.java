@@ -1,5 +1,7 @@
 package it.randomtower.droneswarm;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.Color;
 
 public final class G {
@@ -17,5 +19,7 @@ public final class G {
 
 	public static final int DRONE_RADIUS = 20;
 	public static final float DRONE_MOVE_TIME = 250;
+
+	public static final Random rnd = new Random();
 
 }

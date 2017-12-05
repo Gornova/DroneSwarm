@@ -1,7 +1,5 @@
 package it.randomtower.droneswarm.model;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,11 +20,9 @@ public class Drone extends GameEntity {
 	public float moveTime;
 	public LinearMotion motion;
 	public int radius;
-
-	private Random rnd = new Random();
-
 	public State state = State.WAIT;
 	public boolean selected;
+	public Vector2 target;
 
 	public Drone(float x, float y, Sprite img, Player player, int i, int j) {
 		super(x, y, img, player, i, j, GameEntityType.DRONE);
@@ -36,8 +32,8 @@ public class Drone extends GameEntity {
 	}
 
 	public void setTarget(float f, float g) {
-		this.tx = f + 5 + rnd.nextFloat() * 20;
-		this.ty = g + 5 + rnd.nextFloat() * 20;
+		this.tx = f + 5 + G.rnd.nextFloat() * 20;
+		this.ty = g + 5 + G.rnd.nextFloat() * 20;
 		this.state = State.MOVE;
 		Vector2 v = new Vector2(sprite.getX(), sprite.getY());
 		float distance = v.dst(tx, ty);
@@ -70,8 +66,8 @@ public class Drone extends GameEntity {
 			evaluateCombat(e, this.player);
 			evaluateCombat(this, e.player);
 		}
-		if (this.state == State.ATTACK) {
-
+		if (this.state == State.ATTACK && e == null) {
+			this.state = State.MOVE;
 		}
 		if (this.state == State.MOVE) {
 			this.motion.update((int) (Gdx.graphics.getDeltaTime() * 1000));
@@ -80,13 +76,6 @@ public class Drone extends GameEntity {
 			if (this.motion.isFinished()) {
 				this.state = State.WAIT;
 			}
-		}
-		// if (this.state == State.WAIT && target != null && this.player.name ==
-		// G.PLAYER_ONE) {
-		// this.setTarget(target.x, target.y);
-		// }
-		if (this.state == State.WAIT && this.player.name == G.PLAYER_TWO) {
-			// this.setTarget(ai.target.x, ai.target.y);
 		}
 	}
 
