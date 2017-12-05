@@ -3,7 +3,7 @@ package it.randomtower.droneswarm.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import it.randomtower.droneswarm.Main;
+import it.randomtower.droneswarm.Launcher;
 
 public class DesktopLauncher {
 	public static void main(String[] arg) {
@@ -13,6 +13,6 @@ public class DesktopLauncher {
 		config.width = 640;
 		config.height = 480;
 		config.resizable = false;
-		new LwjglApplication(new Main(), config);
+		new LwjglApplication(new Launcher(), config);
 	}
 }

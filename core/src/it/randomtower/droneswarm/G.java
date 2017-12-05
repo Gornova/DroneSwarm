@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 
 public final class G {
 
+	public static final int WIDTH = 640;
+	public static final int HEIGHT = 480;
+
 	public static final int NEUTRAL = 0;
 	public static final int PLAYER_ONE = 1;
 	public static final int PLAYER_TWO = 2;
@@ -21,5 +24,7 @@ public final class G {
 	public static final float DRONE_MOVE_TIME = 250;
 
 	public static final Random rnd = new Random();
+	public static final int TOTAL_LEVELS = 10;
+	public static int unlockedLevel = 10;
 
 }
