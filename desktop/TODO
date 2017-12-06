@@ -20,7 +20,9 @@ Sprint 3
 	+ new selection mode (thanks to VaTTeRGeR)
 	+ fix drone selection color after a new selection (thanks to VaTTeRGeR)
 	+ add first game menu and level selection
-	- ai can win
+	+ ai can win
+	
+Sprint 4
 	- level definition on file
 	- 3 levels with different configurations
 	- space background

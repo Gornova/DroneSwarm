@@ -20,7 +20,7 @@ public final class G {
 	public static final int STATION_MAX_DRONES = 50;
 	public static final int AI_RE_THINK_TIMER = 2000;
 
-	public static final int DRONE_RADIUS = 20;
+	public static final int DRONE_RADIUS = 10;
 	public static final float DRONE_MOVE_TIME = 250;
 
 	public static final Random rnd = new Random();

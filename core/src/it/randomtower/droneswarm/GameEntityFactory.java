@@ -12,8 +12,8 @@ import it.randomtower.droneswarm.model.Station;
 
 public final class GameEntityFactory {
 
-	public static Station buildStation(int x, int y, Sprite texture, int k, Player one, int l, int m) {
-		return new Station(x, y, texture, k, one, l, m);
+	public static Station buildStation(int x, int y, Sprite texture, int k, Player one, int l, int creationTime) {
+		return new Station(x, y, texture, k, one, l, creationTime);
 	}
 
 	public static GameEntity createDrone(float x, float y, int radius, Player player, Sprite img, Vector2 target) {
