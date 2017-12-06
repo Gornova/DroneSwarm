@@ -84,7 +84,7 @@ public class LevelSelectScreen implements Screen {
 		lb.addListener(new ClickListener() {
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
 				// load level
-				// game.setScreen(new GameScreen(game, level));
+				game.setScreen(new GameScreen(game, level));
 			};
 		});
 		stage.addActor(lb);
