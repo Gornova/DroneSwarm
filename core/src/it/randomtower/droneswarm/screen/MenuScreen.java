@@ -47,7 +47,7 @@ public class MenuScreen implements Screen {
 		final TextButton lb = new TextButton("Start", skin, "default");
 		lb.setWidth(150);
 		lb.setHeight(30);
-		lb.setPosition(250, 230);
+		lb.setPosition(250, 200);
 		lb.addListener(new ClickListener() {
 			public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
 				// load level
@@ -70,7 +70,9 @@ public class MenuScreen implements Screen {
 
 		batch.draw(menuBackground, 0, 0);
 		fontBig.draw(batch, "Drone Swarm", 190, 420);
-		font.draw(batch, "test", 160, 160);
+		font.draw(batch, "Control your drone swarm and conquest galaxy", 60, 370);
+		font.draw(batch, "Drag with left mouse button to select", 140, 160);
+		font.draw(batch, "and use right mouse button to attack", 140, 130);
 		font.draw(batch, "Random tower of games - 2017", 150, 50);
 		batch.end();
 

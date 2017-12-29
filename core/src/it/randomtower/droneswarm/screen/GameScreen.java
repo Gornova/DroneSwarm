@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -77,7 +78,7 @@ public class GameScreen implements Screen, InputProcessor {
 		world.add(ste3);
 
 		//
-		ai = new AI(two, ste2.getVector2());
+		ai = new AI(two, ste2.getVector2(), 3000);
 	}
 
 	@Override
@@ -172,6 +173,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
+		if (keycode == Keys.ESCAPE) {
+			game.setScreen(new LevelSelectScreen(game));
+		}
 		return false;
 	}
 

@@ -99,7 +99,9 @@ public class LevelSelectScreen implements Screen {
 		batch.begin();
 		batch.setProjectionMatrix(cam.combined); // Important
 		batch.draw(menuBackground, 0, 0);
-		font.draw(batch, "Select level  " + G.unlockedLevel + " / " + G.TOTAL_LEVELS, 30, 450);
+		font.draw(batch, "Select level  ", 30, 450);
+		// + G.unlockedLevel + " / " + G.TOTAL_LEVELS
+		font.draw(batch, "Random tower of games - 2017", 150, 50);
 		batch.end();
 
 		stage.act(Gdx.graphics.getDeltaTime());
