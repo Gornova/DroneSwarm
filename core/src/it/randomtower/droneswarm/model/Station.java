@@ -1,6 +1,8 @@
 package it.randomtower.droneswarm.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -60,8 +62,10 @@ public class Station extends GameEntity {
 	@Override
 	public void renderEffect(ShapeRenderer shapeRenderer) {
 		if (G.DEBUG) {
-			shapeRenderer.setColor(player.color);
-			shapeRenderer.begin(ShapeType.Line);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.setColor(player.colorStation);
+			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.circle(sprite.getX() + 10, sprite.getY() + 10, radius);
 			shapeRenderer.end();
 		}
