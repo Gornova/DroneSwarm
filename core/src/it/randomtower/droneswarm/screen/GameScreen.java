@@ -69,11 +69,11 @@ public class GameScreen implements Screen, InputProcessor {
 		world.add(ste);
 
 		Station ste2 = GameEntityFactory.buildStation(640 - 80, 480 - 80, new Sprite(new Texture("station-blue.png")),
-				50, two, 100, 50);
+				50, two, 100, 100);
 		world.add(ste2);
 
-		Station ste3 = GameEntityFactory.buildStation(640 - 80, 50, new Sprite(new Texture("station-gray.png")), 50,
-				neutral, 100, 500);
+		Station ste3 = GameEntityFactory.buildStation(640 / 2, 480 / 2, new Sprite(new Texture("station-gray.png")), 50,
+				neutral, 100, 100);
 		world.add(ste3);
 
 		//
