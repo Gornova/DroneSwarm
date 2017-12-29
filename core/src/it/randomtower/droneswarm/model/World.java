@@ -46,8 +46,7 @@ public class World {
 	}
 
 	public void renderEffect(ShapeRenderer shapeRenderer) {
-		entities.stream().forEach(e -> e.renderEffect(shapeRenderer));
-
+		entities.stream().filter(e -> e.type == GameEntityType.STATION).forEach(e -> e.renderEffect(shapeRenderer));
 	}
 
 }

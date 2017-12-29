@@ -58,10 +58,12 @@ public class Station extends GameEntity {
 
 	@Override
 	public void renderEffect(ShapeRenderer shapeRenderer) {
-		shapeRenderer.setColor(player.color);
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.circle(sprite.getX() + 10, sprite.getY() + 10, radius);
-		shapeRenderer.end();
+		if (G.DEBUG) {
+			shapeRenderer.setColor(player.color);
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.circle(sprite.getX() + 10, sprite.getY() + 10, radius);
+			shapeRenderer.end();
+		}
 	}
 
 }

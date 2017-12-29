@@ -23,10 +23,13 @@ Sprint 3
 	+ ai can win
 	
 Sprint 4
-	- fix ai spawn speed
+	+ fix ai spawn speed, target priority and level 1 (thanks to meva)
+	+ improved menus and controls explanations
+	+ added warmup time for AI
+	+ space background
 	- level definition on file
 	- 3 levels with different configurations
-	- space background
+
 
 	
 	

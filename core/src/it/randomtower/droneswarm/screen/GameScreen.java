@@ -25,6 +25,9 @@ import it.randomtower.droneswarm.AI;
 import it.randomtower.droneswarm.G;
 import it.randomtower.droneswarm.GameEntityFactory;
 import it.randomtower.droneswarm.action.GameAction;
+import it.randomtower.droneswarm.level.Level;
+import it.randomtower.droneswarm.level.LevelLoader;
+import it.randomtower.droneswarm.level.StationLevel;
 import it.randomtower.droneswarm.model.Drone;
 import it.randomtower.droneswarm.model.GameEntityType;
 import it.randomtower.droneswarm.model.Player;
@@ -48,6 +51,9 @@ public class GameScreen implements Screen, InputProcessor {
 	private World world;
 	private Game game;
 	private int level;
+	private Texture background;
+	private Player two;
+	private Player neutral;
 
 	public GameScreen(Game game, int level) {
 		this.game = game;
@@ -63,22 +69,46 @@ public class GameScreen implements Screen, InputProcessor {
 		//
 		world = new World();
 		one = new Player(Color.FOREST, G.PLAYER_ONE);
-		Player two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
-		Player neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
+		two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
+		neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
 
-		Station ste = GameEntityFactory.buildStation(50, 50, new Sprite(new Texture("station.png")), 50, one, 100, 100);
-		world.add(ste);
-
-		Station ste2 = GameEntityFactory.buildStation(640 - 80, 480 - 80, new Sprite(new Texture("station-blue.png")),
-				50, two, 100, 100);
-		world.add(ste2);
-
-		Station ste3 = GameEntityFactory.buildStation(640 / 2, 480 / 2, new Sprite(new Texture("station-gray.png")), 50,
-				neutral, 100, 100);
-		world.add(ste3);
-
+		Level lev = LevelLoader.get(level);
+		for (StationLevel s : lev.getStations()) {
+			Station station = GameEntityFactory.buildStation(s.getX(), s.getY(), getSprite(s.getPlayer()), 50,
+					getPlayer(s.getPlayer()), 100, 100);
+			world.add(station);
+			if (s.isStartingAi()) {
+				ai = new AI(two, station.getVector2(), 3000);
+			}
+		}
 		//
-		ai = new AI(two, ste2.getVector2(), 3000);
+		background = new Texture("background.png");
+	}
+
+	private Sprite getSprite(int player) {
+		switch (player) {
+		case 0:
+			return new Sprite(new Texture("station-gray.png"));
+		case 1:
+			return new Sprite(new Texture("station.png"));
+		case 2:
+			return new Sprite(new Texture("station-blue.png"));
+		default:
+			return null;
+		}
+	}
+
+	private Player getPlayer(int player) {
+		switch (player) {
+		case 0:
+			return neutral;
+		case 1:
+			return one;
+		case 2:
+			return two;
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -93,19 +123,22 @@ public class GameScreen implements Screen, InputProcessor {
 		batch.setProjectionMatrix(camera.combined); // Important
 		batch.begin();
 		if (playerOneWin) {
-			font.draw(batch, "Player One Wins!", 160, 240, 320, Align.center, true);
+			font.draw(batch, "Level completed!", 160, 240, 320, Align.center, true);
+			font.draw(batch, "Click to continue", 160, 200, 320, Align.center, true);
 			batch.end();
 			return;
 		}
 		if (playerTwoWin) {
-			font.draw(batch, "Player Two Wins!", 160, 240, 320, Align.center, true);
+			font.draw(batch, "Game over!", 160, 240, 320, Align.center, true);
+			font.draw(batch, "Press ESC to get back to level selection", 160, 200, 320, Align.center, true);
 			batch.end();
 			return;
 		}
-		// render effects
-		// world.renderEffect(shapeRenderer);
 		// render actual world
+		batch.draw(background, 0, 0);
 		world.render(batch, font);
+		// render effects
+		world.renderEffect(shapeRenderer);
 		// draw selection
 		if (startSelect) {
 			shapeRenderer.begin(ShapeType.Line);
@@ -186,6 +219,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (playerOneWin && button == 0) {
+			System.out.println("next level");
+			game.setScreen(new GameScreen(game, level + 1));
+			return false;
+		}
 		if (button == 1) {
 			// for all selected drones, set target as point
 			world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)

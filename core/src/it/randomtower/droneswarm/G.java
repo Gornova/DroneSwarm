@@ -24,7 +24,8 @@ public final class G {
 	public static final float DRONE_MOVE_TIME = 250;
 
 	public static final Random rnd = new Random();
-	public static final int TOTAL_LEVELS = 1;
-	public static int unlockedLevel = 10;
+	public static final int TOTAL_LEVELS = 3;
+	public static final boolean DEBUG = true;
+	public static int unlockedLevel = 1;
 
 }
