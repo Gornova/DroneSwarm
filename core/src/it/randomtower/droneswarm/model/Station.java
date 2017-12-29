@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 
 import it.randomtower.droneswarm.G;
 import it.randomtower.droneswarm.GameEntityFactory;
@@ -64,6 +65,11 @@ public class Station extends GameEntity {
 			shapeRenderer.circle(sprite.getX() + 10, sprite.getY() + 10, radius);
 			shapeRenderer.end();
 		}
+	}
+
+	// return if a point is inside this entity radius
+	public boolean inRadius(Vector2 point) {
+		return distance(point) <= radius;
 	}
 
 }

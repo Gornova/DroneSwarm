@@ -2,6 +2,7 @@ package it.randomtower.droneswarm.screen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.badlogic.gdx.Game;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
 import it.randomtower.droneswarm.AI;
@@ -222,14 +224,28 @@ public class GameScreen implements Screen, InputProcessor {
 		if (playerOneWin && button == 0) {
 			System.out.println("next level");
 			G.unlockedLevel++;
-			game.setScreen(new GameScreen(game, level + 1));
+			if (level + 1 <= G.TOTAL_LEVELS) {
+				game.setScreen(new GameScreen(game, level + 1));
+			} else {
+				game.setScreen(new WinScreen(game));
+			}
 			return false;
 		}
 		if (button == 1) {
+			// check if screenX and screenY are point for a station and set as
+			// target center of that station
+			Vector2 point = new Vector2(screenX, screenY);
+			Optional<Station> station = world.stream().filter(e -> e.type == GameEntityType.STATION)
+					.map(s -> (Station) s).filter(s -> s.inRadius(point)).findFirst();
 			// for all selected drones, set target as point
 			world.stream().filter(e -> e.type == GameEntityType.DRONE).map(d -> (Drone) d)
-					.filter(d -> d.player.name == one.name).filter(d -> d.selected)
-					.forEach(d -> d.setTarget(screenX, screenY));
+					.filter(d -> d.player.name == one.name).filter(d -> d.selected).forEach(d -> {
+						if (station.isPresent()) {
+							d.setTarget(station.get().getVector2().x, station.get().getVector2().y);
+						} else {
+							d.setTarget(screenX, screenY);
+						}
+					});
 		}
 		return false;
 	}

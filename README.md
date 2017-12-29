@@ -1,6 +1,6 @@
 # Drone Swarm
 
-v0.4
+v0.5
 
 http://randomtower.blogspot.it
 
