@@ -4,7 +4,7 @@ v0.5
 
 http://randomtower.blogspot.it
 
-![Drone Swarm](img/0.3.png)
+![Drone Swarm](img/0.5-2.png)
 
 ## CONTROLS
 
