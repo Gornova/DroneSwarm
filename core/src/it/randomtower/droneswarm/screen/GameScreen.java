@@ -221,6 +221,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (playerOneWin && button == 0) {
 			System.out.println("next level");
+			G.unlockedLevel++;
 			game.setScreen(new GameScreen(game, level + 1));
 			return false;
 		}
