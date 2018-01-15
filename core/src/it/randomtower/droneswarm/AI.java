@@ -50,6 +50,7 @@ public class AI {
 					.collect(Collectors.toMap(s -> s.distance(starting), s -> s, (v1, v2) -> v1, TreeMap::new));
 			Station s = (Station) result.get(result.firstKey());
 			target = s.getVector2();
+			System.out.println("Player " + player.name + " decided to attack station of " + s.player);
 		} else {
 			// is target conquered ?
 			List<GameEntity> test = enemyStations.stream()

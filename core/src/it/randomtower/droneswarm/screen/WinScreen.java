@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import it.randomtower.droneswarm.G;
-import it.randomtower.droneswarm.level.LevelLoader;
 
 public class WinScreen implements Screen {
 	private Game game;
@@ -45,7 +44,6 @@ public class WinScreen implements Screen {
 
 	@Override
 	public void show() {
-		LevelLoader.loadLevels("levels/1.json", "levels/2.json", "levels/3.json");
 	}
 
 	@Override

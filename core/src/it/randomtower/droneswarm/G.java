@@ -12,6 +12,7 @@ public final class G {
 	public static final int NEUTRAL = 0;
 	public static final int PLAYER_ONE = 1;
 	public static final int PLAYER_TWO = 2;
+	public static final int PLAYER_THREE = 3;
 
 	public static final Color LIGHT_RED = new Color(0.25f, 0, 0, 0.1f);
 	public static final Color LIGHT_BLUE = new Color(0, 0, 0.25f, 0.1f);
@@ -24,8 +25,8 @@ public final class G {
 	public static final float DRONE_MOVE_TIME = 250;
 
 	public static final Random rnd = new Random();
-	public static final int TOTAL_LEVELS = 3;
+	public static final int TOTAL_LEVELS = 4;
 	public static final boolean DEBUG = true;
-	public static int unlockedLevel = 1;
+	public static int unlockedLevel = 4;
 
 }

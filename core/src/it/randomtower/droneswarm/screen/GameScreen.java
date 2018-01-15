@@ -44,18 +44,19 @@ public class GameScreen implements Screen, InputProcessor {
 	private BitmapFont font;
 	private boolean playerOneWin;
 	private boolean playerTwoWin;
-	private List<GameAction> actions = new ArrayList<GameAction>();
-	private List<GameAction> actionToAdd = new ArrayList<GameAction>();
+	private List<GameAction> actions = new ArrayList<>();
+	private List<GameAction> actionToAdd = new ArrayList<>();
 	private Player one;
 	private Rectangle selection = new Rectangle(0, 0, 0, 0);
 	private boolean startSelect = false;
-	private AI ai;
+	private List<AI> ais = new ArrayList<>();
 	private World world;
 	private Game game;
 	private int level;
 	private Texture background;
 	private Player two;
 	private Player neutral;
+	private Player three;
 
 	public GameScreen(Game game, int level) {
 		this.game = game;
@@ -72,6 +73,7 @@ public class GameScreen implements Screen, InputProcessor {
 		world = new World();
 		one = new Player(Color.FOREST, G.PLAYER_ONE);
 		two = new Player(G.LIGHT_BLUE, G.PLAYER_TWO);
+		three = new Player(G.LIGHT_RED, G.PLAYER_THREE);
 		neutral = new Player(G.LIGHT_GRAY, G.NEUTRAL);
 
 		Level lev = LevelLoader.get(level);
@@ -80,7 +82,7 @@ public class GameScreen implements Screen, InputProcessor {
 					getPlayer(s.getPlayer()), 100, 100);
 			world.add(station);
 			if (s.isStartingAi()) {
-				ai = new AI(two, station.getVector2(), 3000);
+				ais.add(new AI(getPlayer(s.getPlayer()), station.getVector2(), 3000));
 			}
 		}
 		//
@@ -95,6 +97,8 @@ public class GameScreen implements Screen, InputProcessor {
 			return new Sprite(new Texture("station.png"));
 		case 2:
 			return new Sprite(new Texture("station-blue.png"));
+		case 3:
+			return new Sprite(new Texture("station-red.png"));
 		default:
 			return null;
 		}
@@ -108,6 +112,8 @@ public class GameScreen implements Screen, InputProcessor {
 			return one;
 		case 2:
 			return two;
+		case 3:
+			return three;
 		default:
 			return null;
 		}
@@ -157,9 +163,11 @@ public class GameScreen implements Screen, InputProcessor {
 			action.setToRemove();
 		}
 		// update
-		ai.update(world.stream().filter(e -> e.type == GameEntityType.STATION).collect(Collectors.toList()));
-		ai.process(world.stream().filter(e -> e.type == GameEntityType.DRONE && e.player.name == ai.player.name)
-				.collect(Collectors.toList()));
+		for (AI ai : ais) {
+			ai.update(world.stream().filter(e -> e.type == GameEntityType.STATION).collect(Collectors.toList()));
+			ai.process(world.stream().filter(e -> e.type == GameEntityType.DRONE && e.player.name == ai.player.name)
+					.collect(Collectors.toList()));
+		}
 		world.update();
 		// check win condition
 		long ts = world.stream().filter(e -> (e.type == GameEntityType.STATION)).count();

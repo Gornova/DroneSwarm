@@ -61,7 +61,7 @@ public class MenuScreen implements Screen {
 
 	@Override
 	public void show() {
-		LevelLoader.loadLevels("levels/1.json", "levels/2.json", "levels/3.json");
+		LevelLoader.loadLevels("levels/1.json", "levels/2.json", "levels/3.json", "levels/4.json");
 	}
 
 	@Override
