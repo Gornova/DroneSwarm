@@ -36,8 +36,9 @@ Sprint 5
 	+ another AI
 	+ swapped level 2 and 3 (thanks to orochii)
 	+ 3 more levels
+	+ saved level progression on user home dir
 	- unlockable units
-	- for release: screenshoots, update readme, do push and tag 
+	- for release: set G.DEBUG_LEVELS to false, screenshoots, update readme, do push and tag 
 
 	
 	

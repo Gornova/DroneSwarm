@@ -1,5 +1,11 @@
 package it.randomtower.droneswarm.screen;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -232,6 +238,7 @@ public class GameScreen implements Screen, InputProcessor {
 		if (playerOneWin && button == 0) {
 			System.out.println("next level");
 			G.unlockedLevel++;
+			saveUnlockedLevelProgress();
 			if (level + 1 <= G.TOTAL_LEVELS) {
 				game.setScreen(new GameScreen(game, level + 1));
 			} else {
@@ -256,6 +263,23 @@ public class GameScreen implements Screen, InputProcessor {
 					});
 		}
 		return false;
+	}
+
+	private void saveUnlockedLevelProgress() {
+		try {
+			if (G.HOME_OK) {
+				Path path = Paths.get(G.GAME_HOME + File.separator + G.UNLOCKED_LEVELS_FILE);
+				if (!Files.exists(path)) {
+					Files.createFile(path);
+				}
+				File f = new File(G.GAME_HOME + File.separator + G.UNLOCKED_LEVELS_FILE);
+				FileWriter fw = new FileWriter(f);
+				fw.write(G.unlockedLevel);
+				fw.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

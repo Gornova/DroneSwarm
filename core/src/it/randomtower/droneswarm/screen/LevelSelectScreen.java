@@ -1,5 +1,9 @@
 package it.randomtower.droneswarm.screen;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -55,13 +60,15 @@ public class LevelSelectScreen implements Screen {
 		Gdx.input.setCatchBackKey(true);
 		skin = new Skin(Gdx.files.internal("defaultSkin/uiskin.json"));
 
+		int unlocked = readUnlockedLevels();
+
 		int dx = 0;
 		int dy = 0;
 		int i = 0;
 		int j = 0;
 		while (i < G.TOTAL_LEVELS) {
 			i++;
-			if (i > G.unlockedLevel) {
+			if (i > unlocked) {
 				break;
 			}
 			dy = 350 - j * 60;
@@ -76,8 +83,27 @@ public class LevelSelectScreen implements Screen {
 		}
 	}
 
+	private int readUnlockedLevels() {
+		try {
+			if (G.DEBUG_LEVELS) {
+				return G.TOTAL_LEVELS;
+			}
+			if (G.HOME_OK) {
+				File f = new File(G.GAME_HOME + File.separator + G.UNLOCKED_LEVELS_FILE);
+				FileReader fw = new FileReader(f);
+				int res = fw.read();
+				fw.close();
+				return res == -1 ? G.unlockedLevel : res;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return G.unlockedLevel;
+	}
+
 	private void addButton(final int level, int dx, int dy) {
 		final TextButton lb = new TextButton("" + level, skin, "default");
+		lb.setStyle(skin.get("unlocked", TextButtonStyle.class));
 		lb.setWidth(50);
 		lb.setHeight(30);
 		lb.setPosition(dx, dy);
