@@ -1,5 +1,8 @@
 package it.randomtower.droneswarm.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -61,7 +64,11 @@ public class MenuScreen implements Screen {
 
 	@Override
 	public void show() {
-		LevelLoader.loadLevels("levels/1.json", "levels/2.json", "levels/3.json", "levels/4.json");
+		List<String> levels = new ArrayList<>();
+		for (int i = 1; i <= G.TOTAL_LEVELS; i++) {
+			levels.add("levels/" + i + ".json");
+		}
+		LevelLoader.loadLevels(levels);
 	}
 
 	@Override

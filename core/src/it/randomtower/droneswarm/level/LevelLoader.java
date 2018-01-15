@@ -10,7 +10,7 @@ public class LevelLoader {
 
 	private static List<Level> levels = new ArrayList<>();
 
-	public static final void loadLevels(String... files) throws IllegalArgumentException {
+	public static final void loadLevels(List<String> files) throws IllegalArgumentException {
 		if (files == null) {
 			throw new IllegalArgumentException("provided argument should be not null or empty");
 		}
