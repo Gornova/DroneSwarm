@@ -27,7 +27,7 @@ public final class G {
 
 	public static final Random rnd = new Random();
 	public static final int TOTAL_LEVELS = 6;
-	public static final boolean DEBUG_LEVELS = true;
+	public static final boolean DEBUG_LEVELS = false;
 	public static final boolean DEBUG = true;
 	public static int unlockedLevel = 1;
 

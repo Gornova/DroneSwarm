@@ -56,7 +56,7 @@ public class WinScreen implements Screen {
 		fontBig.draw(batch, "Drone Swarm", 190, 420);
 		font.draw(batch, "You Win!", 270, 260);
 		font.draw(batch, "Press ESC to continue", 200, 120);
-		font.draw(batch, "Random tower of games - 2017", 150, 50);
+		font.draw(batch, "Random tower of games - 2018", 150, 50);
 		batch.end();
 
 		stage.act(Gdx.graphics.getDeltaTime());

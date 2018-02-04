@@ -82,7 +82,7 @@ public class MenuScreen implements Screen {
 		font.draw(batch, "Control your drone swarm and conquest galaxy", 60, 370);
 		font.draw(batch, "Drag with left mouse button to select", 130, 160);
 		font.draw(batch, "and use right mouse button to attack", 130, 130);
-		font.draw(batch, "Random tower of games - 2017", 150, 50);
+		font.draw(batch, "Random tower of games - 2018", 150, 50);
 		batch.end();
 
 		stage.act(Gdx.graphics.getDeltaTime());
