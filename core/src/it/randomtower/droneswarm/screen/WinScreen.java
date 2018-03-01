@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import it.randomtower.droneswarm.G;
@@ -21,7 +20,6 @@ public class WinScreen implements Screen {
 	private BitmapFont fontBig;
 	private Texture menuBackground;
 	private Stage stage;
-	private Skin skin;
 	private OrthographicCamera cam;
 	private StretchViewport viewport;
 
@@ -39,7 +37,6 @@ public class WinScreen implements Screen {
 		// ui
 		stage = new Stage(viewport);
 		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("defaultSkin/uiskin.json"));
 	}
 
 	@Override

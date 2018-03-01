@@ -16,9 +16,7 @@
 
 package com.ixeption.libgdx.transitions.impl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,17 +24,24 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 
-/** A color fading transition
- * @author iXeption */
+/**
+ * A color fading transition
+ * 
+ * @author iXeption
+ */
 public class ColorFadeTransition implements ScreenTransition {
 
 	private final Color color;
 	private final Interpolation interpolation;
 	private final Texture texture;
 
-	/** @param color the {@link Color} to fade to
-	 * @param interpolation the {@link Interpolation} method */
-	public ColorFadeTransition (Color color, Interpolation interpolation) {
+	/**
+	 * @param color
+	 *            the {@link Color} to fade to
+	 * @param interpolation
+	 *            the {@link Interpolation} method
+	 */
+	public ColorFadeTransition(Color color, Interpolation interpolation) {
 		this.color = new Color(Color.WHITE);
 		this.interpolation = interpolation;
 
@@ -48,13 +53,12 @@ public class ColorFadeTransition implements ScreenTransition {
 	}
 
 	@Override
-	public void render (Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
+	public void render(Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
 		float width = currentScreenTexture.getWidth();
 		float height = currentScreenTexture.getHeight();
-		float x = 0;
-		float y = 0;
 
-		if (interpolation != null) percent = interpolation.apply(percent);
+		if (interpolation != null)
+			percent = interpolation.apply(percent);
 
 		batch.begin();
 
@@ -65,16 +69,17 @@ public class ColorFadeTransition implements ScreenTransition {
 			color.a = 1.0f - fade;
 			batch.setColor(color);
 
-			batch.draw(nextScreenTexture, 0, 0, width / 2, height / 2, nextScreenTexture.getWidth(), nextScreenTexture.getHeight(),
-				1, 1, 0, 0, 0, nextScreenTexture.getWidth(), nextScreenTexture.getHeight(), false, true);
+			batch.draw(nextScreenTexture, 0, 0, width / 2, height / 2, nextScreenTexture.getWidth(),
+					nextScreenTexture.getHeight(), 1, 1, 0, 0, 0, nextScreenTexture.getWidth(),
+					nextScreenTexture.getHeight(), false, true);
 
 		} else {
 
 			color.a = 1.0f - fade;
 			batch.setColor(color);
 
-			batch.draw(currentScreenTexture, 0, 0, width / 2, height / 2, width, height, 1, 1, 0, 0, 0, (int)width, (int)height,
-				false, true);
+			batch.draw(currentScreenTexture, 0, 0, width / 2, height / 2, width, height, 1, 1, 0, 0, 0, (int) width,
+					(int) height, false, true);
 
 		}
 

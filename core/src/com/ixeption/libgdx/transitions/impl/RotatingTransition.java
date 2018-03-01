@@ -16,15 +16,16 @@
 
 package com.ixeption.libgdx.transitions.impl;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 
-/** A Rotating transition
- * @author iXeption */
+/**
+ * A Rotating transition
+ * 
+ * @author iXeption
+ */
 public class RotatingTransition implements ScreenTransition {
 
 	private Interpolation interpolation;
@@ -35,21 +36,24 @@ public class RotatingTransition implements ScreenTransition {
 		NONE, IN, OUT
 	}
 
-	/** @param interpolation the {@link Interpolation} method
-	 * @param angle the amount of rotation
-	 * @param scaling apply {@link TransitionScaling} */
-	public RotatingTransition (Interpolation interpolation, float angle, TransitionScaling scaling) {
+	/**
+	 * @param interpolation
+	 *            the {@link Interpolation} method
+	 * @param angle
+	 *            the amount of rotation
+	 * @param scaling
+	 *            apply {@link TransitionScaling}
+	 */
+	public RotatingTransition(Interpolation interpolation, float angle, TransitionScaling scaling) {
 		this.interpolation = interpolation;
 		this.angle = angle;
 		this.scaling = scaling;
 	}
 
 	@Override
-	public void render (Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
+	public void render(Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
 		float width = currentScreenTexture.getWidth();
 		float height = currentScreenTexture.getHeight();
-		float x = 0;
-		float y = 0;
 
 		float scalefactor;
 
@@ -67,14 +71,15 @@ public class RotatingTransition implements ScreenTransition {
 		}
 
 		float rotation = 1;
-		if (interpolation != null) rotation = interpolation.apply(percent);
+		if (interpolation != null)
+			rotation = interpolation.apply(percent);
 
 		batch.begin();
-		batch.draw(currentScreenTexture, 0, 0, width / 2, height / 2, width, height, 1, 1, 0, 0, 0, (int)width, (int)height, false,
-			true);
-		batch.draw(nextScreenTexture, 0, 0, width / 2, height / 2, nextScreenTexture.getWidth(), nextScreenTexture.getHeight(),
-			scalefactor, scalefactor, rotation * angle, 0, 0, nextScreenTexture.getWidth(), nextScreenTexture.getHeight(), false,
-			true);
+		batch.draw(currentScreenTexture, 0, 0, width / 2, height / 2, width, height, 1, 1, 0, 0, 0, (int) width,
+				(int) height, false, true);
+		batch.draw(nextScreenTexture, 0, 0, width / 2, height / 2, nextScreenTexture.getWidth(),
+				nextScreenTexture.getHeight(), scalefactor, scalefactor, rotation * angle, 0, 0,
+				nextScreenTexture.getWidth(), nextScreenTexture.getHeight(), false, true);
 		batch.end();
 
 	}

@@ -16,16 +16,17 @@
 
 package com.ixeption.libgdx.transitions.impl;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Array;
 import com.ixeption.libgdx.transitions.ScreenTransition;
 
-/** A Slicing transition
- * @author iXeption */
+/**
+ * A Slicing transition
+ * 
+ * @author iXeption
+ */
 public class SlicingTransition implements ScreenTransition {
 
 	public enum Direction {
@@ -36,10 +37,15 @@ public class SlicingTransition implements ScreenTransition {
 	private Interpolation interpolation;
 	private Array<Integer> slices = new Array<Integer>();
 
-	/** @param direction the {@link Direction} of the transition
-	 * @param numSlices the number of slices
-	 * @param interpolation the {@link Interpolation} method */
-	public SlicingTransition (Direction direction, int numSlices, Interpolation interpolation) {
+	/**
+	 * @param direction
+	 *            the {@link Direction} of the transition
+	 * @param numSlices
+	 *            the number of slices
+	 * @param interpolation
+	 *            the {@link Interpolation} method
+	 */
+	public SlicingTransition(Direction direction, int numSlices, Interpolation interpolation) {
 		this.direction = direction;
 		this.interpolation = interpolation;
 
@@ -51,21 +57,23 @@ public class SlicingTransition implements ScreenTransition {
 	}
 
 	@Override
-	public void render (Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
+	public void render(Batch batch, Texture currentScreenTexture, Texture nextScreenTexture, float percent) {
 		float width = currentScreenTexture.getWidth();
 		float height = currentScreenTexture.getHeight();
 		float x = 0;
 		float y = 0;
-		int sliceWidth = (int)(width / slices.size);
+		int sliceWidth = (int) (width / slices.size);
 
 		batch.begin();
-		batch.draw(currentScreenTexture, 0, 0, 0, 0, width, height, 1, 1, 0, 0, 0, (int)width, (int)height, false, true);
-		if (interpolation != null) percent = interpolation.apply(percent);
+		batch.draw(currentScreenTexture, 0, 0, 0, 0, width, height, 1, 1, 0, 0, 0, (int) width, (int) height, false,
+				true);
+		if (interpolation != null)
+			percent = interpolation.apply(percent);
 		for (int i = 0; i < slices.size; i++) {
 
 			x = i * sliceWidth;
 
-			float offsetY = height * (1 + slices.get(i) / (float)slices.size);
+			float offsetY = height * (1 + slices.get(i) / (float) slices.size);
 			switch (direction) {
 			case UP:
 				y = -offsetY + offsetY * percent;
@@ -81,8 +89,8 @@ public class SlicingTransition implements ScreenTransition {
 				}
 				break;
 			}
-			batch.draw(nextScreenTexture, x, y, 0, 0, sliceWidth, nextScreenTexture.getHeight(), 1, 1, 0, i * sliceWidth, 0,
-				sliceWidth, nextScreenTexture.getHeight(), false, true);
+			batch.draw(nextScreenTexture, x, y, 0, 0, sliceWidth, nextScreenTexture.getHeight(), 1, 1, 0,
+					i * sliceWidth, 0, sliceWidth, nextScreenTexture.getHeight(), false, true);
 		}
 		batch.end();
 	}
