@@ -20,12 +20,14 @@ public class Station extends GameEntity {
 	public int creationTime; // in ms
 	public boolean selected;
 	public int created;
+	private Sprite percentage;
 
 	public Station(float i, float j, Sprite texture, int radius, Player player, int hp, int creationTime) {
 		super(i, j, texture, player, hp, 1, GameEntityType.STATION);
 		this.creationTime = creationTime;
 		this.radius = radius;
 		this.selected = false;
+		this.percentage = new Sprite(new Texture("percentage.png"));
 	}
 
 	public void update(World world) {
@@ -45,18 +47,19 @@ public class Station extends GameEntity {
 
 	@Override
 	public void render(SpriteBatch batch, BitmapFont font) {
-		if (selected) {
-			font.setColor(Color.YELLOW);
-			font.draw(batch, getPercent(hp), sprite.getX() - 5, sprite.getY() + 70);
-			font.setColor(Color.WHITE);
-		} else {
-			font.draw(batch, getPercent(hp), sprite.getX() - 5, sprite.getY() + 70);
+		if (getPercent(hp) > 70) {
+			batch.setColor(G.GREEN);
+		} else if (getPercent(hp) > 50 && getPercent(hp) <= 70) {
+			batch.setColor(G.ORANGE);
+		} else if (getPercent(hp) <= 50) {
+			batch.setColor(G.RED);
 		}
+		batch.draw(percentage, sprite.getX() - 40, sprite.getY() - 40);
+		batch.setColor(Color.WHITE);
 	}
 
-	private String getPercent(int hp) {
-		int p = (int) ((hp / 100f) * 100);
-		return "" + p + " %";
+	private int getPercent(int hp) {
+		return (int) ((hp / 100f) * 100);
 	}
 
 	@Override

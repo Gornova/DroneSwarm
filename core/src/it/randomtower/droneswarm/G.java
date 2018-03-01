@@ -18,6 +18,9 @@ public final class G {
 	public static final Color LIGHT_RED = new Color(0.25f, 0, 0, 0.1f);
 	public static final Color LIGHT_BLUE = new Color(0, 0, 0.25f, 0.1f);
 	public static final Color LIGHT_GRAY = new Color(150f, 150f, 150f, 0.1f);
+	public static final Color GREEN = Color.valueOf("#48a70b");
+	public static final Color ORANGE = Color.valueOf("#ffdb00");
+	public static final Color RED = Color.valueOf("#ea1b1b");
 
 	public static final int STATION_MAX_DRONES = 50;
 	public static final int AI_RE_THINK_TIMER = 2000;
@@ -26,7 +29,7 @@ public final class G {
 	public static final float DRONE_MOVE_TIME = 250;
 
 	public static final Random rnd = new Random();
-	public static final int TOTAL_LEVELS = 6;
+	public static final int TOTAL_LEVELS = 10;
 	public static final boolean DEBUG_LEVELS = false;
 	public static final boolean DEBUG = true;
 	public static int unlockedLevel = 1;
