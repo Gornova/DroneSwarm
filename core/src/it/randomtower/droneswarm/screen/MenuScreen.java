@@ -21,7 +21,6 @@ import it.randomtower.droneswarm.level.LevelLoader;
 
 public class MenuScreen implements Screen {
 
-	private Game game;
 	private BitmapFont font;
 	private SpriteBatch batch;
 	private BitmapFont fontBig;
@@ -36,7 +35,6 @@ public class MenuScreen implements Screen {
 		cam = new OrthographicCamera(G.WIDTH, G.HEIGHT);
 		viewport = new StretchViewport(G.WIDTH, G.HEIGHT, cam);
 
-		this.game = game;
 		font = new BitmapFont(Gdx.files.internal("orbitron.fnt"), Gdx.files.internal("orbitron.png"), false);
 		fontBig = new BitmapFont(Gdx.files.internal("orbitron_big_yellow.fnt"),
 				Gdx.files.internal("orbitron_big_yellow.png"), false);
